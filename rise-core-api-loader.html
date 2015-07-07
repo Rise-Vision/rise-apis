@@ -1,0 +1,71 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-client-loader.html">
+
+<!--
+An element for loading Rise Vision Core Api
+
+Example:
+
+    <rise-core-api-loader id="riseCoreApiLoader">
+
+    </rise-core-api-loader>
+
+@group Rise Vision Api
+@element rise-core-api-loader
+@demo demo/index.html
+-->
+<dom-module id="rise-core-api-loader">
+
+  <template>
+    <google-client-loader api-root="{{ apiRoot }}" app-id="{{ appId }}" id="coreAPI"
+                          name="core"
+                          version="v1"></google-client-loader>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'rise-core-api-loader',
+
+    properties: {
+
+      test: {
+        type: String,
+        value: 'test'
+      },
+      /**
+       * Describes the URL of the api e.g. 'https://rvaserver2.appspot.com/_ah/api'
+       *
+       * @attribute apiRoot
+       * @type {string}
+       */
+      apiRoot: {
+        type: String,
+        value: function() {
+          return 'https://rvaserver2.appspot.com/_ah/api'
+        }
+      },
+
+      /**
+       * Describes the name of the app e.g. 'rvaserver2' on 'https://rvaserver2.appspot.com/_ah/api'
+       * NOTE: it is overwritten when setting the apiRoot
+       *
+       * @attribute appId
+       * @type {string}
+       */
+      appId: String
+    },
+
+    /**
+     * Returns the api object for making api calls
+     *
+     * @method api
+     * @returns Returns the api object for making api calls
+     */
+    get api() {
+      return this.$.coreAPI.api;
+    }
+
+  });
+</script>

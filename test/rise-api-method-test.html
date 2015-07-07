@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../rise-apis.html">
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <rise-api-method id="riseApiGetUserCompany" entity="company" method="get" parameters="" success-event-name="getUserCompanyHandler"></rise-api-method>
+
+    <script>
+      var myEl = document.querySelector('rise-api-method');
+
+      suite('<rise-api-method>', function() {
+
+        test('defines the "apiRoot" property', function() {
+          assert.equal(myEl.entity, 'company');
+          assert.equal(myEl.method, 'get');
+          assert.equal(myEl.parameters, '');
+          assert.equal(myEl.successEventName, 'getUserCompanyHandler');
+          assert.equal(myEl.errorEventName, 'rise-api-method-error');
+        });
+      });
+    </script>
+
+  </body>
+</html>
