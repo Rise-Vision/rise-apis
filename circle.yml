@@ -1,7 +1,8 @@
 dependencies:
   pre:
     # required for deploying github page
-    - apt-get install expect
+    - curl -L -o expect_5.45-2_amd64.deb http://archive.ubuntu.com/ubuntu/pool/main/e/expect/expect_5.45-2_amd64.deb
+    - sudo dpkg -i expect_5.45-2_amd64.deb
     - npm install -g yo
     - npm install -g generator-polymer
   post:
