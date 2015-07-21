@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>rise-apis Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../../google-signin/google-signin.html">
+    <link rel="import" href="../rise-apis.html">
+    <link href="../../rv-common-style/dist/css/rise.min.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+
+
+
+  <dom-module id="rise-apis-demo">
+
+    <template>
+
+      <p>An example of <code>&lt;rise-apis&gt;</code>:</p>
+
+      <template is="dom-bind">
+        <p> You must signin before running!!</p>
+        <google-signin
+          client-id="1039315471777-oqrb8m2qfkrfp2hv2f9dta5jf72ob72p.apps.googleusercontent.com"
+        </google-signin>
+      </template>
+
+      <p>Select an entity: </p>
+      <select id="entitySelection" on-change="selectEntity">
+        <option value="">--entity--</option>
+        <template is="dom-repeat" items="{{entities}}">
+          <option  value="{{item.name}}">{{item.name}}</option>
+        </template>
+      </select>
+
+
+      <p>Select an  api method: </p>
+      <select id="methodSelection" on-change="selectMethod">
+        <option value="">--method--</option>
+        <template is="dom-repeat" items="{{methods}}">
+          <option  value="{{item.name}}">{{item.name}}</option>
+        </template>
+      </select>
+      <br>
+      <br>
+      <div>
+        <button on-click="run">Run</button>
+      </div>
+      <rise-api-method id="riseApi" entity="{{entity}}" method="{{method}}" parameters="{{ parameters }}"></rise-api-method>
+
+      <rise-api-method id="riseApiGetUserCompany" entity="company" method="get" parameters="" success-event-name="getUserCompanyHandler"></rise-api-method>
+      <br>
+      <br>
+      <div id="result"></div>
+
+    </template>
+  </dom-module>
+
+
+    <script>
+      Polymer({
+        is: 'rise-apis-demo',
+
+        properties: {
+          entities: {
+            type: Array,
+            value: [
+              {name: 'display'},
+              {name: 'user'},
+              {name: 'company'}
+            ]
+          },
+          methods: {
+            type: Array,
+            value: [
+              {name: 'list'},
+            ]
+          }
+        },
+
+        listeners: {
+          'rise-api-method': '_apiMethodHandler',
+          'rise-api-method-error': '_apiMethodErrorHandler',
+          'google-signin-success': '_userSignInHandler',
+          'getUserCompanyHandler': '_getUserCompanyHandler'
+        },
+
+        ready: function() {
+          this.selectEntity();
+          this.selectMethod();
+        },
+
+        _userSignInHandler: function () {
+          var that = this;
+          this.$.riseApiGetUserCompany.addEventListener('google-api-load', function() {
+            that.$.riseApiGetUserCompany.run();
+          });
+        },
+
+        _getUserCompanyHandler: function (event) {
+          this.companyId = event.detail.resource.id;
+          console.log(this.companyId);
+        },
+
+        _apiMethodHandler: function (event) {
+          console.log(event.detail.resource);
+          this.$.result.innerHTML = JSON.stringify(event.detail.resource);
+
+        },
+        _apiMethodErrorHandler: function (event) {
+          this.$.result.innerHTML = JSON.stringify(event.detail.resource);
+        },
+
+        selectEntity: function () {
+          var entitySelection = this.$.entitySelection;
+          this.entity = entitySelection.options[entitySelection.selectedIndex].value;
+          console.log("entity: ", this.entity);
+        },
+
+        selectMethod: function () {
+          var methodSelection = this.$.methodSelection;
+          this.method = methodSelection.options[methodSelection.selectedIndex].value;
+          console.log("method: ", this.method);
+        },
+
+        run: function () {
+          this.parameters = {
+            companyId : this.companyId
+          };
+          this.$.riseApi.run();
+        }
+
+
+      });
+
+
+    </script>
+  <rise-apis-demo></rise-apis-demo>
+  </body>
+</html>

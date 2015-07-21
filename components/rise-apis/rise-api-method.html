@@ -1,0 +1,110 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../rise-apis/rise-core-api-loader.html">
+<!--
+An element for calling Rise Vision Core Api methods
+
+Example:
+
+    <rise-api-method id="riseApiGetUserCompany"
+                entity="company"
+                method="get"
+                parameters=""
+                success-event-name="getUserCompanyHandler">
+    </rise-api-method>
+
+@group Rise Vision Api
+@element rise-api-method
+@demo demo/index.html
+-->
+<dom-module id="rise-api-method">
+
+  <template>
+    <rise-core-api-loader id="riseCoreApiLoader"></rise-core-api-loader>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'rise-api-method',
+
+    properties: {
+      /**
+       * Describes the entity to get data for
+       *
+       * @attribute entity
+       * @type {string}
+       */
+      entity: String,
+
+      /**
+       * Describes a method of the api
+       *
+       * @attribute method
+       * @type {string}
+       */
+      method: String,
+
+      /**
+       * Describes the parameters for the api request
+       *
+       * @attribute parameters
+       * @type {Object}
+       */
+      parameters: Object,
+
+      /**
+       * Name of the event fired when request is OK
+       *
+       * @attribute successEventName
+       * @type {string}
+       */
+      successEventName: {
+        type: String,
+        value: 'rise-api-method'
+      },
+      /**
+       * Name of the event fired when there is an error when making the request.
+       *
+       * @attribute errorEventName
+       * @type {string}
+       */
+      errorEventName: {
+        type: String,
+        value: 'rise-api-method-error'
+      }
+    },
+
+    /**
+     * Returns the function to make a request to the api
+     *
+     * @method run
+     * @returns Returns the function to make a request to the api
+     */
+    get run() {
+      return this._run;
+    },
+
+    _run: function () {
+      console.debug("Calling", this.entity, this.method, this.parameters);
+      var coreAPI = this.$.riseCoreApiLoader;
+      var request = coreAPI.api[this.entity][this.method](this.parameters);
+
+      request.execute(this._handleResponse.bind(this));
+    },
+
+    _handleResponse: function (response) {
+      console.debug("Api response: ",response);
+      if(response.result){
+        var resource = response.item;
+        if(this.method === 'list'){
+           resource = response.items;
+        }
+        this.fire(this.successEventName, { 'resource' : resource });
+      }else{
+        console.debug("Items could not be retrieved");
+        this.fire(this.errorEventName, { 'response' : response });
+      }
+    }
+  });
+</script>
