@@ -9,6 +9,7 @@ deployment:
   staging:
     branch: /(feature|fix|chore).*/
     commands:
+      - echo "stage"
   production:
     branch: master
     commands:
