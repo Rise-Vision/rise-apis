@@ -1,6 +1,7 @@
 dependencies:
   pre:
     # required for deploying github page
+    - apt-get install expect
     - npm install -g yo
     - npm install -g generator-polymer
   post:
